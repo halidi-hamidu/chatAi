@@ -1,0 +1,27 @@
+{% extends '../base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="top_content my-3">
+    <img src="{% static 'image/udom.png' %}" class="img-fluid w-50" alt="">
+</div>
+<h4>PHISHING DETECTOR PLATFORM</h4>
+<form action="" autocomplete="off" method="post">
+    {% csrf_token %}
+    <div class="form-group my-2">
+        {{form.username.label_tag}}
+        {% render_field form.username name='username' class='form-control' autocomplete='off' %}
+    </div>
+    <div class="form-group my-2">
+        {{form.password.label_tag}}
+        {% render_field form.password name='password' class='form-control' autocomplete='off' %}
+    </div>
+    <div class="form-group my-2">
+        <button type="submit" class="btn btn-sm btn-primary w-100" name="login_btn">Login</button>
+    </div>
+    <span>Don't have an account click. <a href="{% url 'authentication:registerView' %}">Here!</a></span>
+</form>
+{% endblock %}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'bootstrap-5.2.3-dist/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-5.2.3-dist/css/bootstrap.min.css' %}">
+    <title>Phishing detector - {% block title %}{% endblock %}</title>
+</head>
+<body>
+
+    <div class="outer_content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 offset-md-4">
+                    <div class="inner_content">
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'bootstrap-5.2.3-dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'bootstrap-5.2.3-dist/js/message.js' %}"></script>
+    {% if messages %}
+    {% for message in messages %}
+        <script>
+            Swal.fire({
+            title: '{{ message.tags|capfirst }}',
+            text: '{{ message }}',
+            icon: '{{ message.tags }}',
+            confirmButtonText: 'OK'
+            });
+        </script>
+    {% endfor %}
+    {% endif %}
+</body>
+</html> 

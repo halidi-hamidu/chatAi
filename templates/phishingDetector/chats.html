@@ -1,0 +1,104 @@
+{% extends '../layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load humanize %}
+
+{% block title %}Chats{% endblock %}
+{% block content %}
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Chats</h1>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'phishingDetector:chatsView' %}">Chats</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Chats</li>
+    </ol>
+  </div>
+
+  <div class="row mb-3">
+    <!-- Earnings (Monthly) Card Example -->
+
+    <div class="col-xl-12 col-lg-12 mb-4">
+      <div class="card p-3">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">Chats</h6>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush datatable" id="datatable">
+            <thead class="thead-light">
+              <tr>
+                <th>SN</th>
+                <th>Chat ID</th>
+                <th>Chat Name</th>
+                <th>Chat Members</th>
+                <th>Created At</th>
+                <!-- <th>Updated At</th> -->
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            {% if chats %}
+                <tbody>
+                    {% for chat in chats %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td><a href="#">{{chat.id}}</a></td>
+                            <td>{{chat.chat_name|upper}}</td>
+                            <td>
+                              {% for member in chat.chat_members %}
+                              {% for account in accounts %}
+                                {% if member == account.uid %}
+                                  <span class="text-primary fw-bold">[ {{account.first_name|title}} {{account.last_name|title}} ]</span>
+                                {% endif %}
+                                {% endfor %}
+                              {% endfor %}
+                            </td>
+                            <td>{{chat.created_at|naturaltime}}</td>
+                            <!-- <td>{{chat.created_at|naturaltime}}</td> -->
+                            <td><span class="badge badge-success">Safe</span></td>
+                            <td><a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#chatModalDetailView{{chat.id}}"><span class="fa fa-eye"></span></a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            {% endif %}
+          </table>
+        </div>
+        <div class="card-footer"></div>
+      </div>
+    </div>
+
+
+    {% if chats %}
+    {% for chat in chats %}
+      <div class="modal fade" id="chatModalDetailView{{chat.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="chatModalDetailView{{chat.id}}Label" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="chatModalDetailView{{chat.id}}Label">Chats <span class="text-success fw-bold">#{{chat.id}}</span></h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <span><b>chat id:</b> {{chat.id}}</span>,
+              <span><b>chat name:</b> {{chat.chat_name|title}}</span>,
+              <span><b>chat members id:</b> 
+                {% for member in chat.chat_members %}
+                  {% for account in accounts %}
+                    {% if member == account.uid %}
+                      <span class="text-primary fw-bold">[{{ member }} ({{account.first_name|title}} {{account.last_name|title}})]</span>
+                    {% endif %}
+                  {% endfor %}
+                {% endfor %}
+              </span>,
+              <span><b>chat description:</b> {{chat.chat_description|title}}</span>,
+              <span><b>chat status:</b> <span class="badge badge-success">Safe</span></span>.
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    {% endif %}
+
+
+  </div>
+{% endblock %}

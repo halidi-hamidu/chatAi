@@ -1,0 +1,44 @@
+{% extends '../base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="top_content my-3">
+    <img src="{% static 'image/udom.png' %}" class="img-fluid w-50" alt="">
+</div>
+
+<h4>PHISHING DETECTOR PLATFORM</h4>
+<form action="" autocomplete="off" method="post">
+    {% csrf_token %}
+    <div class="form-group my-2">
+        {{form.first_name.label_tag}}
+        {% render_field form.first_name name='first_name' class='form-control' autocomplete='off' %}
+    </div>
+    <div class="form-group my-2">
+        {{form.last_name.label_tag}}
+        {% render_field form.last_name name='last_name' class='form-control' autocomplete='off' %}
+    </div>
+    <div class="form-group my-2">
+        {{form.username.label_tag}}
+        {% render_field form.username name='username' class='form-control' autocomplete='off' %}
+    </div>
+    <div class="form-group my-2">
+        {{form.email.label_tag}}
+        {% render_field form.email name='email' class='form-control' autocomplete='off' %}
+    </div>
+    <div class="form-group my-2">
+        <label for="Password">Password:</label>
+        {% render_field form.password1 name='password1' class='form-control' autocomplete='off' %}
+    </div>
+    <div class="form-group my-2">
+        <label for="Confirm Password">Confirm Password:</label>
+        {% render_field form.password2 name='password2' class='form-control' autocomplete='off' %}
+    </div>
+    <div class="form-group my-2">
+        <button type="submit" class="btn btn-sm btn-primary w-100" name="register_btn">Register</button>
+    </div>
+    <span>Already have an account click. <a href="{% url 'authentication:loginView' %}">Here!</a></span>
+</form>
+{% endblock %}

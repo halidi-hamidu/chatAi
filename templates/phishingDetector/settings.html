@@ -1,0 +1,196 @@
+{% extends '../layout.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load humanize %}
+
+{% block title %}Settings{% endblock %}
+{% block content %}
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Settings</h1>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'phishingDetector:settingsView' %}">Settings</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Settings</li>
+    </ol>
+  </div>
+
+  <div class="row mb-3">
+    <!-- Earnings (Monthly) Card Example -->
+
+    <div class="col-xl-12 col-lg-12 mb-4">
+      <div class="card p-3">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">Settings</h6>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush datatable" id="datatable">
+            <thead class="thead-light">
+              <tr>
+                <th>SN</th>
+                <th>ID</th>
+                <th>Fullname</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Created At</th>
+                {% if request.user.is_superuser %}
+                <th>Action</th>
+                {% endif %}
+              </tr>
+            </thead>
+            {% if users %}
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td><a href="#">{{user.id}}</a></td>
+                            <td>{{user.first_name|title}} {{user.last_name|title}}</td>
+                            <td>{{user.username|title}}</td>
+                            <td>{{user.email}}</td>
+                            <td>
+                                {% if not user.is_superuser %}
+                                    <span class="badge badge-info">Staff</span>
+                                {% else %}
+                                    <span class="badge badge-success">Admin</span>
+                                {% endif %}
+                            </td>
+                            <td>{{user.date_joined|naturaltime}}</td>
+                            {% if request.user.is_superuser %}
+                            <td>
+                                <a href="{% url 'phishingDetector:userAuthorizationView' user.id %}" class="btn btn-sm btn-outline-primary"><span class="fa fa-unlock"></span></a>
+                                <a href="#" class="btn btn-sm btn-outline-primary" 
+                                data-bs-toggle="modal" data-bs-target="#updateUserModalDetailView{{user.id}}"><span class="fa fa-edit"></span></a>
+                                <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModalDetailView{{user.id}}"><span class="fa fa-trash"></span></a>
+                                <a href="" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#viewUserModalDetailView{{user.id}}"><span class="fa fa-eye"></span></a>
+                            </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            {% endif %}
+          </table>
+        </div>
+        <div class="card-footer"></div>
+      </div>
+    </div>
+
+
+    {% if users %}
+    {% for user in users %}
+      <div class="modal fade" id="deleteUserModalDetailView{{user.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteUserModalDetailView{{user.id}}Label" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+              <form action="{% url 'phishingDetector:settingsDeleteView' user.id %}" method="post">
+                {% csrf_token %}
+                <p>Are you sure you want to delete this user?</p>
+                <button type="submit" class="btn btn-sm btn-danger" name="delete_user_btn">Delete</button>
+                <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Close</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    {% endif %}
+
+
+    {% if users %}
+    {% for user in users %}
+      <div class="modal fade" id="updateUserModalDetailView{{user.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updateUserModalDetailView{{user.id}}Label" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+              <h4>*Update personal information</h4>
+              <form action="{% url 'phishingDetector:settingsUpdateView' user.id %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" value="{{user.id}}" name="user_id">
+                <div class="form-group">
+                  <label for="Firstname">Firstname:</label>
+                  <input type="text" class="form-control" name="first_name" value="{{user.first_name}}">
+                </div>
+                <div class="form-group">
+                  <label for="Lastname">Lastname:</label>
+                  <input type="text" class="form-control" name="last_name" value="{{user.last_name}}">
+                </div>
+                <div class="form-group">
+                  <label for="Email">Email:</label>
+                  <input type="text" class="form-control" name="email" value="{{user.email}}">
+                </div>
+                <button type="submit" class="btn btn-sm btn-primary" name="update_user_btn">Save changes</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if users %}
+    {% for user in users %}
+      <div class="modal fade" id="userAuthorizationModal{{user.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="userAuthorizationModal{{user.id}}Label" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+              <h4><span class="text-dark fw-bold">*Roles & Authorization Form</span></h4>
+              <form action="{% url 'phishingDetector:userAuthorizationView' user.id %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" value="{{user.id}}" name="user_id">
+                <div>
+                  <span class="text-dark fw-bold">view dashboard</span>
+                  <input type="checkbox" name="view_dashboard">
+                  <span class="text-dark fw-bold">view messages</span>
+                  <input type="checkbox" name="view_message">
+                  <span class="text-dark fw-bold">view chats</span>
+                  <input type="checkbox" name="view_chat">
+                  <span class="text-dark fw-bold">view settings</span>
+                  <input type="checkbox" name="view_setting">
+                  <span class="text-dark fw-bold">view logs</span>
+                  <input type="checkbox" name="view_logs">
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-sm btn-primary" name="authorize_user_btn">Apply roles</button>
+                  <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if users %}
+    {% for user in users %}
+      <div class="modal fade" id="viewUserModalDetailView{{user.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="viewUserModalDetailView{{user.id}}Label" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="viewUserModalDetailView{{user.id}}Label">Personal Information <span class="text-success fw-bold">#{{user.id}}</span></h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <span><b>User id:</b> {{user.id}}</span>,
+              <span><b>Fullname:</b> {{user.first_name|title}} {{user.last_name|title}}</span>,
+              <span><b>Username:</b> {{user.username|title}}</span>.
+              <span><b>Email:</b> {{user.email}}</span>.
+              <span><b>Status:</b> 
+                {% if not user.is_superuser %}
+                  <span class="badge badge-info">Staff</span>
+                {% else %}
+                  <span class="badge badge-success">Admin</span>
+                {% endif %}
+              </span>,
+              <span><b>date joined:</b> {{user.date_joined|naturaltime}}</span>.
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    {% endif %}
+
+  </div>
+{% endblock %}

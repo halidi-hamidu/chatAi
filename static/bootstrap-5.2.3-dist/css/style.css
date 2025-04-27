@@ -1,0 +1,28 @@
+html,
+body{
+    margin: 0px;
+    padding: 0px;
+}
+
+.outer_content{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ddd;
+}
+
+.outer_content .inner_content{
+    background-color: #fff;
+    padding: 20px;
+    /* border-radius: 10px; */
+}
+.outer_content .top_content{
+    display: flex;
+    justify-content: center;
+}
+
+.outer_content h4{
+    text-align: center;
+}
