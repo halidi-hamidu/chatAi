@@ -46,6 +46,7 @@
         </div>
       </div>
     </div>
+
     <!-- New User Card Example -->
     <div class="col-xl-3 col-md-6 mb-4">
       <div class="card h-100">
@@ -53,7 +54,7 @@
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="text-xs font-weight-bold text-uppercase mb-1">Safe Messages (Total)</div>
-              <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{get_total_messages}}</div>
+              <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{not_phishing_messages_total}}</div>
             </div>
             <div class="col-auto">
               <i class="fas fa-envelope fa-2x text-success"></i>
@@ -69,7 +70,7 @@
           <div class="row no-gutters align-items-center">
             <div class="col mr-2">
               <div class="text-xs font-weight-bold text-uppercase mb-1">Spam Messages (Total)</div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">{{get_total_messages}}</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{is_phishing_messages_total}}</div>
             </div>
             <div class="col-auto">
               <i class="fas fa-envelope fa-2x text-danger"></i>
@@ -94,7 +95,7 @@
                 <th>Chat Members</th>
                 <th>Created At</th>
                 <!-- <th>Updated At</th> -->
-                <th>Status</th>
+                <!-- <th>Status</th> -->
                 <th>Action</th>
               </tr>
             </thead>
@@ -121,7 +122,7 @@
                             </td>
                             <td>{{chat.created_at|naturaltime}}</td>
                             <!-- <td>{{chat.created_at|naturaltime}}</td> -->
-                            <td><span class="badge badge-success">Safe</span></td>
+                            <!-- <td><span class="badge badge-success">Safe</span></td> -->
                             <td><a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#chatModalDetailView{{chat.id}}"><span class="fa fa-eye"></span></a></td>
                         </tr>
                     {% endfor %}

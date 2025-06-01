@@ -14,7 +14,6 @@
   </div>
 
   <div class="row mb-3">
-    <!-- Earnings (Monthly) Card Example -->
 
     <div class="col-xl-12 col-lg-12 mb-4">
       <div class="card p-3">
@@ -31,7 +30,6 @@
                 <th>Sender ID</th>
                 <th>Recipient ID</th>
                 <th>Created At</th>
-                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -61,7 +59,6 @@
                               </span>
                             </td>
                             <td>{{chat_message.created_at|naturaltime}}</td>
-                            <td><span class="badge badge-danger">Spam</span></td>
                             <td><a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#messagesModalDetailView{{chat_message.id}}"><span class="fa fa-eye"></span></a></td>
                         </tr>
                     {% endfor %}
@@ -72,6 +69,62 @@
         <div class="card-footer"></div>
       </div>
     </div>
+
+    <!-- #################### MESSAGE DETECTION TABLE -->
+    <div class="col-xl-12 col-lg-12 mb-4">
+      <div class="card p-3">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">Phishing detection</h6>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-sm align-items-center table-flush datatable" id="datatable">
+            <thead class="thead-light">
+              <tr>
+                <th>SN</th>
+                <th>Detection ID</th>
+                <!-- <th>Message ID</th> -->
+                <th>Message Body</th>
+                <th>Sender</th>
+                <th>Receiver</th>
+                <th>Is phishing</th>
+                <th>Reasons</th>
+              </tr>
+            </thead>
+            {% if phishing_detections %}
+                <tbody>
+                    {% for phishing_detection in phishing_detections %}
+                      <tr>
+                          <td>{{forloop.counter}}</td>
+                          <td><span class="badge badge-dark"><a href="#" class="text-white">{{phishing_detection.id}}</a></span></td>
+                          <!-- <td>{{phishing_detection.message_id}}</td> -->
+                          <td>{{phishing_detection.message_body}}</td>
+                          <td>{{phishing_detection.sender|title}}</td>
+                          <td>{{phishing_detection.receiver|title}}</td>
+                          <td>
+                            {% if phishing_detection.is_phishing == False %}
+                              <img src="{% static 'image/tick.png' %}" style="width: 30%;" alt="">
+                            {% else %}
+                              <img src="{% static 'image/close.png' %}" style="width: 30%;" alt="">
+                            {% endif %}
+                          </td>
+                          <td>
+                            {% if not phishing_detection.is_phishing == 1 %}
+                              <span class="badge badge-success">No reason provided yet #(SAFE)</span>
+                            {% else %}
+                              <span class="badge badge-danger"> SCAM</span>
+                            {% endif %}
+                          </td>
+                      </tr>
+                    {% endfor %}
+                </tbody>
+            {% endif %}
+          </table>
+        </div>
+        <div class="card-footer"></div>
+      </div>
+    </div>
+
+
 
 
     {% if chat_messages %}
