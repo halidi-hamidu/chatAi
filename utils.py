@@ -4,4 +4,3 @@ SUPABASE_URL = "https://opflubhudldbaxzamwyr.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wZmx1Ymh1ZGxkYmF4emFtd3lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQyMTg3OTgsImV4cCI6MjA1OTc5NDc5OH0.uHXoNK1vdeUWfYoW-ZlFEk73tWNsSPYcvJtt4FIkZGQ"
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-

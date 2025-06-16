@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from celery.schedules import crontab
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,15 +41,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'authentication',
     'rest_framework',
-    'phishingDetector',
+    'phishingDetector.apps.PhishingdetectorConfig',
+    # 'phishingDetector',
     'widget_tweaks',
-    'django.contrib.humanize'
+    'django.contrib.humanize',
+    'django_htmx'
 ]
+INSTALLED_APPS += ["django_celery_beat"]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django_htmx.middleware.HtmxMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -136,3 +143,14 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Asynchronous function celery redis
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+
+# CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_BEAT_SCHEDULE = {
+    'run-phishing-detection-every-10-minutes': {
+        'task': 'phishingDetector.tasks.detect_phishing_and_save',
+        'schedule': 600.0,  # 10 minutes
+    },
+}

@@ -83,44 +83,33 @@
     <div class="col-xl-12 col-lg-12 mb-4">
       <div class="card p-3">
         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-          <h6 class="m-0 font-weight-bold text-primary">Chats</h6>
+          <h6 class="m-0 font-weight-bold text-primary">Model Results </h6>
         </div>
         <div class="table-responsive">
           <table class="table align-items-center table-flush datatable" id="datatable">
             <thead class="thead-light">
               <tr>
                 <th>SN</th>
-                <th>Chat ID</th>
-                <th>Chat Name</th>
-                <th>Chat Members</th>
-                <th>Created At</th>
+                 <th>Created At</th>
+                <th>Message Body</th>
+                <!-- <th>Sender </th> -->
+                <th>Status</th>
+               
                 <!-- <th>Updated At</th> -->
                 <!-- <th>Status</th> -->
                 <th>Action</th>
               </tr>
             </thead>
-            {% if chats %}
+            {% if results %}
                 <tbody>
-                    {% for chat in chats %}
+                    {% for chat in results %}
                         <tr>
                             <td>{{forloop.counter}}</td>
-                            <td><a href="#">{{chat.id}}</a></td>
-                            <td>{{chat.chat_name|upper}}</td>
-                            <td>
-                              {% for member in chat.chat_members %}
-                              {% for account in accounts %}
-                                {% if member == account.uid %}
-                                  <span class="text-primary fw-bold">[ {{account.first_name|title}} {{account.last_name|title}} ]</span>
-                                {% endif %}
-                                {% endfor %}
-                              {% endfor %}
-
-
-                                <!-- {% for member in chat.chat_members %}
-                                    <span class="badge badge-dark">{{ member }}</span>
-                                {% endfor %} -->
-                            </td>
-                            <td>{{chat.created_at|naturaltime}}</td>
+                            <td>{{ chat.created_at }}</td>
+                            <td>{{chat.message_body }}</td>
+                          
+                            <!-- <td>{{chat.sender_name.name }}</td> -->
+                            <td> {% if chat.status == true %} <span class="badge badge-danger">Spam</span> {% else %} <span class="badge badge-success">Safe</span> {% endif %}</td>
                             <!-- <td>{{chat.created_at|naturaltime}}</td> -->
                             <!-- <td><span class="badge badge-success">Safe</span></td> -->
                             <td><a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#chatModalDetailView{{chat.id}}"><span class="fa fa-eye"></span></a></td>

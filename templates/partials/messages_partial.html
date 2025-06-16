@@ -1,0 +1,149 @@
+{% load static %}
+{% load widget_tweaks %}
+{% load humanize %}
+<div class="col-xl-12 col-lg-12 mb-4">
+      <div class="card p-3">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">Messages</h6>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush datatable" id="datatable">
+            <thead class="thead-light">
+              <tr>
+                <th>SN</th>
+                <th>Message ID</th>
+                <th>Message Body</th>
+                <th>Sender ID</th>
+                <th>Recipient ID</th>
+                <th>Created At</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            {% if chat_messages %}
+                <tbody>
+                    {% for chat_message in chat_messages %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td><a href="#">{{chat_message.id}}</a></td>
+                            <td>{{chat_message.message_text}}</td>
+                            <td>
+                              <span class="badge bg-primary text-white">
+                                {% for account in accounts %}
+                                  {% if chat_message.sender_id == account.uid %}
+                                  {{chat_message.sender_id}}: {{account.first_name|title}} {{account.last_name|title}}
+                                  {% endif %}
+                                {% endfor %}
+                              </span>
+                            </td>
+                            <td>
+                              <span class="badge bg-dark text-white">
+                                {% for chat in chats %}
+                                  {% if chat_message.recipient_id == chat.id %}
+                                    {{chat_message.recipient_id}}: {{chat.chat_name}}
+                                  {% endif %}
+                                {% endfor %}
+                              </span>
+                            </td>
+                            <td>{{chat_message.created_at|naturaltime}}</td>
+                            <td><a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#messagesModalDetailView{{chat_message.id}}"><span class="fa fa-eye"></span></a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            {% endif %}
+          </table>
+        </div>
+        <div class="card-footer"></div>
+      </div>
+    </div>
+
+    <!-- #################### MESSAGE DETECTION TABLE -->
+    <div class="col-xl-12 col-lg-12 mb-4">
+      <div class="card p-3">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">Phishing detection</h6>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-sm align-items-center table-flush datatable" id="datatable">
+            <thead class="thead-light">
+              <tr>
+                <th>SN</th>
+                <th>Detection ID</th>
+                <!-- <th>Message ID</th> -->
+                <th>Message Body</th>
+                <th>Sender</th>
+                <th>Receiver</th>
+                <th>Is phishing</th>
+                <th>Reasons</th>
+              </tr>
+            </thead>
+            {% if phishing_detections %}
+                <tbody>
+                    {% for phishing_detection in phishing_detections %}
+                      <tr>
+                          <td>{{forloop.counter}}</td>
+                          <td><span class="badge badge-dark"><a href="#" class="text-white">{{phishing_detection.id}}</a></span></td>
+                          <!-- <td>{{phishing_detection.message_id}}</td> -->
+                          <td>{{phishing_detection.message_body}}</td>
+                          <td>{{phishing_detection.sender|title}}</td>
+                          <td>{{phishing_detection.receiver|title}}</td>
+                          <td>
+                            {% if phishing_detection.is_phishing == False %}
+                              <img src="{% static 'image/tick.png' %}" style="width: 30%;" alt="">
+                            {% else %}
+                              <img src="{% static 'image/close.png' %}" style="width: 30%;" alt="">
+                            {% endif %}
+                          </td>
+                          <td>
+                            {% if not phishing_detection.is_phishing == 1 %}
+                              <span class="badge badge-success">No reason provided yet #(SAFE)</span>
+                            {% else %}
+                              <span class="badge badge-danger"> SCAM</span>
+                            {% endif %}
+                          </td>
+                      </tr>
+                    {% endfor %}
+                </tbody>
+            {% endif %}
+          </table>
+        </div>
+        <div class="card-footer"></div>
+      </div>
+    </div>
+
+    {% if chat_messages %}
+    {% for chat_message in chat_messages %}
+      <div class="modal fade" id="messagesModalDetailView{{chat_message.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="messagesModalDetailView{{chat_message.id}}Label" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="messagesModalDetailView{{chat_message.id}}Label">Messages <span class="text-success fw-bold">#{{chat_message.id}}</span></h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <span><b>message id:</b> {{chat_message.id}}</span>,
+              <span><b>messae text:</b> {{chat_message.message_text}}</span>,
+              <span><b>sender id:</b> 
+                {% for account in accounts %}
+                  {% if chat_message.sender_id == account.uid %}
+                  <span class="badge badge-primary">{{chat_message.sender_id}}: {{account.first_name|title}} {{account.last_name|title}}</span>
+                  {% endif %}
+                {% endfor %}
+              </span>,
+              <span><b>recipient id:</b> 
+                {% for chat in chats %}
+                  {% if chat_message.recipient_id == chat.id %}
+                    <span class="badge badge-primary">{{chat_message.recipient_id}}: {{chat.chat_name|title}}</span>
+                  {% endif %}
+                {% endfor %}
+              </span>,
+              <!-- <span><b>message images:</b> <a href="{{chat_message.image_path.urls}}">{{chat_message.image_path.urls}}</a></span>, -->
+              <span><b>chat status:</b> <span class="badge badge-danger">Spam</span></span>.
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    {% endif %}
